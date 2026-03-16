@@ -58,7 +58,8 @@
 
   <!-- ===== SIDEBAR ===== -->
   <aside
-    class="sidebar-transition fixed inset-y-0 left-0 z-50 flex flex-col bg-sidebar"
+    class="sidebar-transition fixed inset-y-0 left-0 z-50 flex flex-col"
+    style="background: radial-gradient(ellipse 150% 50% at bottom left, #0F6349 0%, #144B50 40%, #16232E 100%);"
     :class="[
       'lg:z-30',
       mobileOpen ? 'w-[232px] translate-x-0' : '-translate-x-full',
@@ -110,8 +111,8 @@
             href="#"
             class="group flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors relative"
             :class="{
-              'text-white bg-sidebar-hover': isActive(item) && !item.children,
-              'text-gray-400 hover:text-white hover:bg-sidebar-hover': !isActive(item) || item.children,
+              'text-white bg-white/10': isActive(item) && !item.children,
+              'text-gray-400 hover:text-white hover:bg-white/10': !isActive(item) || item.children,
             }"
             @click.prevent="item.children ? toggleSection(item.label) : (setActive(item.label), closeMobileNav())"
           >
@@ -139,7 +140,7 @@
                 class="group flex items-center gap-2.5 rounded-md py-1.5 text-sm transition-colors relative pl-9 pr-2"
                 :class="activeItem === child.label
                   ? 'text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-sidebar-hover'"
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'"
                 @click.prevent="setActive(child.label); closeMobileNav()"
               >
                 <div
