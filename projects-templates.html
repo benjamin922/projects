@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rentvine - Projects Templates</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sidebar: {
+              DEFAULT: '#2b2b2b',
+              hover: '#363636',
+              active: '#3a3a3a',
+            },
+            brand: {
+              DEFAULT: '#00a54f',
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .sidebar-transition { transition: width 200ms ease-in-out, transform 200ms ease-in-out; }
+    .content-transition { transition: margin-left 200ms ease-in-out; }
+    aside.sidebar-transition { transform: translateX(-100%); width: 0; }
+    @media (min-width: 1024px) {
+      aside.sidebar-transition { transform: translateX(0); width: 232px; }
+    }
+  </style>
+</head>
+<body class="h-screen overflow-hidden bg-white text-gray-900 antialiased">
+<div x-data="app()" class="flex h-screen" x-init="init()">
+  <!-- ===== MOBILE BACKDROP ===== -->
+  <div
+    x-show="mobileOpen"
+    x-transition:enter="transition-opacity ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition-opacity ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    class="fixed inset-0 z-40 bg-black/50 lg:hidden"
+    @click="mobileOpen = false"
+    x-cloak
+  ></div>
+  <!-- ===== SIDEBAR ===== -->
+  <aside
+    class="sidebar-transition fixed inset-y-0 left-0 z-50 flex flex-col bg-sidebar"
+    :class="[
+      'lg:z-30',
+      mobileOpen ? 'w-[232px] translate-x-0' : '-translate-x-full',
+      'lg:translate-x-0',
+      sidebarOpen ? 'lg:w-[232px]' : 'lg:w-[56px]',
+    ]"
+  >
+    <!-- Logo -->
+    <div class="flex h-[60px] items-center px-4 shrink-0">
+      <a href="#" class="flex items-center gap-2 overflow-hidden">
+        <template x-if="sidebarOpen || mobileOpen">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 827.704 177" preserveAspectRatio="xMinYMid" class="h-6 w-auto shrink-0">
+            <title>Rentvine logo</title>
+            <g id="Components"><g id="c94c7645-a3dd-48f0-90f8-e91b688c16f6_1">
+              <path d="M169.8,150.085c-.552,0-1-.448-1-1V63.0106c0-4.3061,3.485-7.7985,7.781-7.7985h9.201c.552,0,1,.4477,1,1v12.6447c0,1.0001,1.355,1.4124,1.962,.6175,3.466-4.5383,7.702-7.9988,12.708-10.3728,5.689-2.7027,11.632-4.1229,17.838-4.2604,.552-.0122,1,.4367,1,.989v8.768c0,3.9588-2.965,7.238-6.88,7.749-3.202,.4117-6.301,1.1212-9.305,2.1282-5.113,1.7066-9.275,4.4896-12.492,8.3492-3.218,3.8596-4.826,9.0785-4.826,15.6517v43.8098c0,4.306-3.485,7.799-7.781,7.799h-9.206Z" style="fill:#ffffff;"></path>
+              <path d="M272.91,152.362c-9.216,0-17.353-2.118-24.421-6.355-7.068-4.237-12.621-10.086-16.66-17.552-4.039-7.461-6.058-16.063-6.058-25.806s2.019-18.3409,6.058-25.8071c4.039-7.4612,9.622-13.3102,16.754-17.5518,7.128-4.2366,15.299-6.3549,24.515-6.3549,8.706,0,16.343,2.1829,22.906,6.5485,6.563,4.3656,11.706,10.5618,15.428,18.5935,3.6064,7.788,5.4663,16.9037,5.5779,27.3612,.0059,.5504-.4445,1.0056-.995,1.0056h-70.812c-.5753,0-1.0367,.4981-.9856,1.0711,.7886,8.8491,3.8845,15.7987,9.2856,20.8459,5.613,5.249,12.522,7.873,20.729,7.873,6.31,0,9.501-1.483,13.733-4.46,2.549-1.791,3.119-2.84,5-5.212,2.747-3.463,2.863-5.964,7.95-5.964h11.456c.5884,0,1.0447,.5324,.9295,1.1095-.6773,3.3938-3.0272,8.0814-5.5996,12.1223-2.4568,3.8592-5.519,7.3039-9.0867,10.1676-1.5809,1.269-2.9493,2.1537-5.6493,3.6537-6,3-13.244,4.711-20.06,4.711h.005ZM296.669,92.2108c.582,0,1.007-.4955,.946-1.0742-.483-4.5925-1.807-8.5015-3.972-11.7349-2.336-3.4776-5.3-6.1664-8.899-8.0664-3.598-1.8951-7.607-2.8476-12.022-2.8476s-8.459,.9178-12.493,2.7533c-4.038,1.8356-7.414,4.5244-10.126,8.0665-2.519,3.2833-4.085,7.2189-4.699,11.8067-.078,.5859,.388,1.0966,.979,1.0966h50.286Z" style="fill:#ffffff;"></path>
+              <path d="M335.82,150.083c-.553,.001-1.002-.447-1.002-1V63.0108c0-4.306,3.485-7.7985,7.781-7.7985h8.825c.552,0,1,.4477,1,1v9.282c0,1.0111,1.389,1.4208,1.995,.6111,2.817-3.7674,6.221-6.7659,10.215-8.998,4.984-2.7831,10.696-4.1722,17.13-4.1722,7.444,0,13.913,1.5181,19.402,4.5542,5.489,3.0361,9.716,7.7489,12.686,14.1336,2.965,6.3897,4.449,14.7686,4.449,25.1419v45.5161c0,4.306-3.484,7.799-7.78,7.799h-9.201c-.552,0-1-.448-1-1v-47.572c0-8.6027-.98-15.1461-2.935-19.6407-1.96-4.4897-4.672-7.62-8.142-9.391-3.475-1.7711-7.479-2.7186-12.022-2.8476-7.702,0-13.696,2.7235-17.982,8.1607-4.291,5.4421-6.434,13.0919-6.434,22.9596v41.532c0,4.306-3.485,7.799-7.781,7.799h-7.559l-1.645,.003Z" style="fill:#ffffff;"></path>
+              <path d="M464.764,152.362c-9.463,0-16.789-2.436-21.961-7.307-5.177-4.867-7.76-11.857-7.76-20.965V33.4143c0-4.3061,3.484-7.7986,7.78-7.7986h9.201c.552,0,1,.4478,1,1v27.6018c0,.5523,.448,1,1,1h24.881c.552,0,1,.4477,1,1v6.7588c0,4.3061-3.485,7.7987-7.781,7.7987h-18.1c-.552,0-1,.4477-1,1v49.661c0,4.683,1.163,8.255,3.504,10.72,2.336,2.466,5.707,3.701,10.127,3.701h12.25c.552,0,1,.448,1,1v4.294c0,3-.94,7.5-6.153,9.693-2.885,1.214-5.964,1.518-8.993,1.518h.005Z" style="fill:#ffffff;"></path>
+              <path d="M530.504,150.084c-.602,0-1.146-.361-1.38-.917l-36.07-86.016c-2.089-5,.411-7.9335,4.411-7.9392h10.355c.407,0,.774,.2468,.927,.624l28.915,71.2752c.338,.833,1.518,.832,1.854-.002l27.021-67.0206c1.187-2.9468,4.043-4.8766,7.216-4.8766h11.992c.713,0,1.197,.7261,.923,1.3849l-36.989,88.6953c-1.213,2.902-4.044,4.792-7.182,4.792h-11.993Z" style="fill:#ffffff;"></path>
+              <path d="M603.388,150.084c-.552,0-1-.447-1-1V63.0103c0-4.3061,3.485-7.7985,7.781-7.7985h9.201c.5519,0,1,.4477,1,1v86.0742c0,4.306-3.485,7.798-7.781,7.798h-9.201Z" style="fill:#ffffff;"></path>
+              <path d="M620.375,26.6098c0-.5522-.448-1-1-1h-10.325c-3.677,0-6.662,2.9865-6.662,6.6774v10.3505c0,.5523,.448,1,1,1h10.325c3.677,0,6.662-2.9864,6.662-6.6773v-10.3506Z" style="fill:#ffffff;"></path>
+              <path d="M640.118,150.082c-.554,.002-1.003-.446-1.003-1V63.0108c0-4.306,3.485-7.7985,7.781-7.7985h8.824c.553,0,1,.4477,1,1v9.282c0,1.0111,1.39,1.4208,1.996,.6111,2.816-3.7674,6.22-6.7659,10.215-8.998,4.984-2.7831,10.696-4.1722,17.13-4.1722,7.444,0,13.913,1.5181,19.402,4.5542,5.489,3.0361,9.716,7.7489,12.686,14.1336,2.964,6.3897,4.449,14.7686,4.449,25.1419v45.5161c0,4.306-3.484,7.799-7.781,7.799h-9.2c-.553,0-1-.448-1-1v-47.572c0-8.6027-.98-15.1461-2.935-19.6407-1.96-4.4897-4.673-7.62-8.142-9.391-3.475-1.7711-7.479-2.7186-12.023-2.8476-7.701,0-13.695,2.7235-17.981,8.1607-4.291,5.4421-6.434,13.0919-6.434,22.9596v41.532c0,4.306-3.485,7.799-7.781,7.799h-8.201l-1.002,.002Z" style="fill:#ffffff;"></path>
+              <path d="M783.604,152.362c-9.216,0-17.353-2.118-24.421-6.355-7.068-4.237-12.621-10.086-16.66-17.552-4.038-7.461-6.058-16.063-6.058-25.806s2.02-18.3409,6.058-25.8071c4.039-7.4612,9.622-13.3102,16.754-17.5518,7.128-4.2366,15.299-6.3549,24.515-6.3549,8.706,0,16.343,2.1829,22.9059,6.5485,6.563,4.3656,11.7061,10.5618,15.428,18.5935,3.6064,7.788,5.4663,16.9038,5.5779,27.3612,.0059,.5504-.4445,1.0056-.9949,1.0056h-70.812c-.5753,0-1.0367,.4981-.9857,1.0711,.7886,8.8491,3.8845,15.7987,9.2856,20.8459,5.613,5.249,12.522,7.873,20.729,7.873,12.0589,0,16.4293-6.7678,18.733-9.672,2.747-3.463,2.863-5.964,7.95-5.964h11.456c.5884,0,1.0447,.5324,.9295,1.1095-.6773,3.3938-3.0272,8.0814-5.5996,12.1223-2.4568,3.8592-5.519,7.3039-9.0867,10.1676-1.5809,1.269-2.9493,2.1537-5.6493,3.6537-6,3-13.244,4.711-20.06,4.711h.005ZM756.465,92.2108h50.863c.582,0,1.0421-.4955,.981-1.0742-.483-4.5925-1.807-8.5016-3.972-11.7349-2.336-3.4776-5.3-6.1664-8.899-8.0665-3.598-1.895-7.607-2.8475-12.022-2.8475s-8.459,.9178-12.493,2.7533c-4.038,1.8356-7.414,4.5244-10.126,8.0665-2.39,3.1147-4.115,8.772-4.667,11.8128-.105,.5816,.354,1.0905,.945,1.0905,1.326,0-.61,0-.61,0Z" style="fill:#ffffff;"></path>
+              <path d="M59,0l53.3998,53.3998c3.5858,3.5858,5.6002,8.4491,5.6002,13.5201v51.0801l-59-59V0Z" style="fill:#00a54f;"></path>
+              <path d="M59,59L5.6002,112.3998c-3.5858,3.5858-5.6002,8.4491-5.6002,13.5201v51.0801l53.3998-53.3998c3.5858-3.5858,5.6002-8.4491,5.6002-13.5201v-51.0801Z" style="fill:#00a54f;"></path>
+            </g></g>
+          </svg>
+        </template>
+        <template x-if="!sidebarOpen && !mobileOpen">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118 177" class="h-6 w-auto shrink-0">
+            <path d="M59,0l53.3998,53.3998c3.5858,3.5858,5.6002,8.4491,5.6002,13.5201v51.0801l-59-59V0Z" style="fill:#00a54f;"></path>
+            <path d="M59,59L5.6002,112.3998c-3.5858,3.5858-5.6002,8.4491-5.6002,13.5201v51.0801l53.3998-53.3998c3.5858-3.5858,5.6002-8.4491,5.6002-13.5201v-51.0801Z" style="fill:#00a54f;"></path>
+          </svg>
+        </template>
+      </a>
+      <button
+        @click="mobileOpen = false"
+        class="lg:hidden ml-auto rounded-md p-1 text-gray-400 hover:text-white transition-colors"
+      >
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <nav class="flex-1 overflow-y-auto overflow-x-hidden px-2 py-1 space-y-0.5">
+      <template x-for="item in navItems" :key="item.label">
+        <div>
+          <a
+            href="#"
+            class="group flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm transition-colors relative"
+            :class="{
+              'text-white bg-sidebar-hover': isActive(item) && !item.children,
+              'text-gray-400 hover:text-white hover:bg-sidebar-hover': !isActive(item) || item.children,
+            }"
+            @click.prevent="item.children ? toggleSection(item.label) : (setActive(item.label), closeMobileNav())"
+          >
+            <div
+              x-show="isActive(item) && !item.children"
+              class="absolute left-0 top-1 bottom-1 w-0.5 rounded-full bg-brand"
+            ></div>
+            <i :data-lucide="item.icon" class="w-[18px] h-[18px] shrink-0"></i>
+            <span x-show="isExpanded" x-cloak class="flex-1 truncate" x-text="item.label"></span>
+            <i
+              x-show="item.children && isExpanded"
+              x-cloak
+              :data-lucide="isSectionOpen(item.label) ? 'chevron-up' : 'chevron-down'"
+              class="w-4 h-4 shrink-0 text-gray-500"
+            ></i>
+          </a>
+          <div
+            x-show="item.children && isSectionOpen(item.label) && isExpanded"
+            x-collapse
+            x-cloak
+          >
+            <template x-for="child in item.children" :key="child.label">
+              <a
+                href="#"
+                class="group flex items-center gap-2.5 rounded-md py-1.5 text-sm transition-colors relative pl-9 pr-2"
+                :class="activeItem === child.label
+                  ? 'text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-sidebar-hover'"
+                @click.prevent="setActive(child.label); closeMobileNav()"
+              >
+                <div
+                  x-show="activeItem === child.label"
+                  class="absolute left-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brand"
+                ></div>
+                <span class="truncate" x-text="child.label"></span>
+              </a>
+            </template>
+          </div>
+        </div>
+      </template>
+    </nav>
+    <div class="shrink-0 border-t border-white/10 px-2 py-3">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-xs font-semibold shrink-0">
+          VV
+        </div>
+        <div x-show="isExpanded" x-cloak class="flex-1 min-w-0">
+          <div class="text-sm text-white font-medium truncate">Vinny T. Vine</div>
+          <div class="text-xs text-gray-400 truncate">ABC Homes</div>
+        </div>
+        <button
+          x-show="isExpanded"
+          x-cloak
+          class="shrink-0 text-gray-400 hover:text-white transition-colors"
+        >
+          <i data-lucide="settings" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+  <!-- ===== MAIN AREA ===== -->
+  <div
+    class="content-transition flex flex-1 flex-col min-w-0 ml-0 lg:ml-[232px]"
+    :class="{ 'lg:ml-[232px]': sidebarOpen, 'lg:ml-[56px]': !sidebarOpen }"
+  >
+    <header class="flex h-[52px] items-center justify-between border-b border-black/[0.2] bg-white px-4 shrink-0 relative">
+      <div class="flex items-center">
+        <button
+          @click="mobileOpen = true"
+          class="lg:hidden rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <button
+          @click="sidebarOpen = !sidebarOpen"
+          class="hidden lg:flex rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+        >
+          <i data-lucide="panel-left" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="hidden sm:block absolute left-1/2 -translate-x-1/2 w-full max-w-[400px] px-4">
+        <button
+          class="flex items-center gap-1.5 w-full rounded-lg border border-black/[0.2] bg-white px-3 py-2 text-sm text-gray-400 hover:border-gray-300 transition-colors h-10"
+        >
+          <i data-lucide="search" class="w-4 h-4 shrink-0 text-gray-400"></i>
+          <span class="flex-1 text-left text-gray-400">Search...</span>
+          <kbd class="inline-flex items-center gap-0.5 rounded-md border border-black/[0.2] bg-white px-1.5 py-0.5 text-xs text-gray-400 font-medium">
+            <span class="text-xs">&#8984;</span>K
+          </kbd>
+        </button>
+      </div>
+      <button class="sm:hidden rounded-lg p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors">
+        <i data-lucide="search" class="w-5 h-5"></i>
+      </button>
+      <div class="flex items-center gap-3">
+        <button class="relative p-1 text-gray-500 hover:text-gray-700 transition-colors">
+          <i data-lucide="bell" class="w-4 h-4"></i>
+          <span class="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-red-500"></span>
+        </button>
+        <button class="w-7 h-7 rounded-full border border-gray-300/60 overflow-hidden bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 hover:border-gray-400 transition-colors">
+          <img src="https://i.pravatar.cc/28?u=vinny" alt="User" class="w-full h-full object-cover" />
+        </button>
+      </div>
+    </header>
+    <!-- ===== MAIN CONTENT AREA ===== -->
+    <main class="flex-1 overflow-y-auto bg-gray-50">
+      <!-- ============================================================
+           PAGE CONTENT - Projects Templates
+           ============================================================ -->
+      <div id="content">
+        <!-- Page title bar -->
+        <div class="flex items-center justify-between px-4 py-2 bg-white border-b border-black/[0.2] shrink-0 gap-3">
+          <h1 class="text-xl sm:text-[28px] font-semibold text-gray-900 tracking-tight leading-[34px] truncate">Projects</h1>
+          <div class="flex items-center gap-2 shrink-0">
+            <button class="inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-sm font-medium text-white hover:bg-green-600 transition-colors shadow-sm">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              New Template
+            </button>
+          </div>
+        </div>
+
+        <!-- Page content -->
+        <div class="px-4 py-3 space-y-4">
+          <div class="rounded-lg border border-gray-200 bg-white">
+            <!-- Tabs -->
+            <div class="flex items-center gap-1 px-4 pt-3 pb-0">
+              <a href="#" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
+                Projects
+              </a>
+              <a href="#" class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-600 text-white shadow-sm">
+                Templates
+              </a>
+            </div>
+
+            <!-- Toolbar: Search + Column Toggle -->
+            <div class="flex items-center justify-between px-4 py-3 gap-3">
+              <!-- Search -->
+              <div class="relative flex-1 max-w-sm">
+                <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+                <input
+                  type="text"
+                  placeholder="Search Name, Description"
+                  class="w-full rounded-md border border-gray-300 bg-white pl-9 pr-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
+                />
+              </div>
+              <!-- Column Toggle -->
+              <button class="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors" title="Toggle columns">
+                <i data-lucide="columns-3" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="bg-gray-50 border-y border-gray-200">
+                    <th class="text-left font-medium text-gray-500 px-4 py-2.5 whitespace-nowrap">Name</th>
+                    <th class="text-left font-medium text-gray-500 px-4 py-2.5 whitespace-nowrap">Description</th>
+                    <th class="text-left font-medium text-gray-500 px-4 py-2.5 whitespace-nowrap">Count</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr class="hover:bg-gray-50/50 transition-colors">
+                    <td class="px-4 py-3 whitespace-nowrap">
+                      <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">Cool Project Template</a>
+                    </td>
+                    <td class="px-4 py-3 text-gray-400 whitespace-nowrap">--</td>
+                    <td class="px-4 py-3 text-gray-700 whitespace-nowrap">0</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50/50 transition-colors">
+                    <td class="px-4 py-3 whitespace-nowrap">
+                      <a href="#" class="text-blue-600 hover:text-blue-800 hover:underline font-medium">Pre Move In Check</a>
+                    </td>
+                    <td class="px-4 py-3 text-gray-700 whitespace-nowrap">Pre Move in Check of Home</td>
+                    <td class="px-4 py-3 text-gray-700 whitespace-nowrap">1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between px-4 py-3 border-t border-gray-200 text-sm text-gray-500">
+              <div class="flex items-center gap-2">
+                <span class="whitespace-nowrap">Rows per page:</span>
+                <select class="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer">
+                  <option>15</option>
+                  <option>25</option>
+                  <option>50</option>
+                  <option>100</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="whitespace-nowrap">1-2 of 2</span>
+                <div class="flex items-center gap-1">
+                  <span class="whitespace-nowrap">Pages</span>
+                  <select class="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer">
+                    <option>1</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ============================================================
+           END PAGE CONTENT
+           ============================================================ -->
+    </main>
+  </div>
+</div>
+<script>
+  function app() {
+    return {
+      sidebarOpen: true,
+      mobileOpen: false,
+      navItems: [
+        { label: 'Dashboard',    icon: 'layout-dashboard' },
+        { label: 'Portfolios',   icon: 'folders' },
+        { label: 'Property',     icon: 'building-2',       children: [{ label: 'Properties' }, { label: 'Associations' }, { label: 'Marketing' }] },
+        { label: 'Screening',    icon: 'file-search',      children: [{ label: 'Dashboard' }, { label: 'Prospects' }, { label: 'Applications' }, { label: 'Payments' }, { label: 'Invitations' }] },
+        { label: 'Leases',       icon: 'clipboard-list',   children: [{ label: 'Dashboard' }, { label: 'Leases' }] },
+        { label: 'Rentsign',     icon: 'file-pen' },
+        { label: 'Accounting',   icon: 'dollar-sign',      children: [{ label: 'Dashboard' }, { label: 'Money In' }, { label: 'Money Out' }, { label: 'Banking' }, { label: 'Transactions' }, { label: 'Diagnostics' }, { label: 'Manager' }] },
+        { label: 'Contacts',     icon: 'contact',          children: [{ label: 'Owners' }, { label: 'Tenants' }, { label: 'Vendors' }, { label: 'Messages' }] },
+        { label: 'Maintenance',  icon: 'wrench', open: true, children: [{ label: 'Dashboard' }, { label: 'Work Orders' }, { label: 'Projects', active: true }, { label: 'Inspections' }, { label: 'Technicians' }, { label: 'Price Book' }] },
+        { label: 'Reports',      icon: 'chart-line' },
+      ],
+      activeItem: null,
+      openSections: [],
+      get isExpanded() {
+        return this.sidebarOpen || this.mobileOpen;
+      },
+      closeMobileNav() {
+        this.mobileOpen = false;
+      },
+      toggleSection(label) {
+        const idx = this.openSections.indexOf(label);
+        if (idx > -1) {
+          this.openSections.splice(idx, 1);
+        } else {
+          this.openSections.push(label);
+        }
+      },
+      isSectionOpen(label) {
+        return this.openSections.includes(label);
+      },
+      setActive(label) {
+        this.activeItem = label;
+      },
+      isActive(item) {
+        if (this.activeItem === item.label) return true;
+        if (item.children) {
+          return item.children.some(c => c.label === this.activeItem);
+        }
+        return false;
+      },
+      init() {
+        for (const item of this.navItems) {
+          if (item.active) this.activeItem = item.label;
+          if (item.open) this.openSections.push(item.label);
+          if (item.children) {
+            for (const child of item.children) {
+              if (child.active) this.activeItem = child.label;
+            }
+          }
+        }
+        this.$nextTick(() => lucide.createIcons());
+        this.$watch('openSections', () => {
+          this.$nextTick(() => lucide.createIcons());
+        });
+        this.$watch('sidebarOpen', () => {
+          this.$nextTick(() => lucide.createIcons());
+        });
+        this.$watch('mobileOpen', () => {
+          this.$nextTick(() => lucide.createIcons());
+        });
+      },
+    };
+  }
+</script>
+</body>
+</html>
