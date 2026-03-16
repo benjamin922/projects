@@ -219,20 +219,20 @@
         <div class="bg-white border-b border-black/[0.2] shrink-0 px-4 pt-3 pb-2">
           <!-- Breadcrumb -->
           <nav class="flex items-center gap-1.5 text-sm mb-1">
-            <a href="#" class="text-blue-600 hover:text-blue-700 hover:underline">Home</a>
+            <a href="projects-list.html" class="text-blue-600 hover:text-blue-700 hover:underline">Projects</a>
             <span class="text-gray-400">/</span>
-            <a href="#" class="text-blue-600 hover:text-blue-700 hover:underline">Projects</a>
+            <span class="text-gray-500">New Project</span>
           </nav>
           <!-- Title -->
           <h1 class="text-xl sm:text-[28px] font-semibold text-gray-900 tracking-tight leading-[34px]">New Project</h1>
         </div>
 
         <!-- Page content -->
-        <div class="px-4 py-6">
-          <div class="max-w-[640px] mx-auto">
+        <div class="px-4 py-6" x-data="projectForm()" x-init="init()">
+          <div class="max-w-[720px] mx-auto">
             <!-- Form card -->
             <div class="bg-white rounded-lg border border-gray-200 p-6 sm:p-8">
-              <form class="space-y-5">
+              <form class="space-y-5" @submit.prevent>
 
                 <!-- Project Template -->
                 <div>
@@ -292,7 +292,7 @@
                   </div>
                 </div>
 
-                <!-- Managed By (search dropdown with search icon) -->
+                <!-- Managed By -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1.5">Managed By</label>
                   <div class="relative">
@@ -305,7 +305,6 @@
 
                 <!-- Date fields - 2 column grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <!-- Actual Start Date -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Actual Start Date</label>
                     <div class="relative">
@@ -315,8 +314,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- Actual End Date -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Actual End Date</label>
                     <div class="relative">
@@ -326,8 +323,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- Scheduled Start Date -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Scheduled Start Date</label>
                     <div class="relative">
@@ -337,8 +332,6 @@
                       </div>
                     </div>
                   </div>
-
-                  <!-- Scheduled End Date -->
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1.5">Scheduled End Date</label>
                     <div class="relative">
@@ -350,31 +343,33 @@
                   </div>
                 </div>
 
-                <!-- SECTION DIVIDER: Budget & Limits -->
+                <!-- ═══════════════════════════════════════════════ -->
+                <!-- SECTION: Project Budget                        -->
+                <!-- ═══════════════════════════════════════════════ -->
                 <div class="border-t border-gray-200 pt-5 mt-6">
-                  <h3 class="text-sm font-semibold text-gray-900 mb-4">Budget & Limits</h3>
+                  <h3 class="text-sm font-semibold text-gray-900 mb-4">Project Budget</h3>
 
-                  <!-- Project Cost Limit -->
+                  <!-- Project Budget input -->
                   <div class="mb-5">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Project Cost Limit</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Project Budget<span class="text-red-500 ml-0.5">*</span></label>
                     <div class="relative">
                       <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
                         <span class="text-sm">$</span>
                       </div>
-                      <input type="text" class="w-full border border-gray-300 rounded-md pl-7 pr-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-colors" placeholder="0.00" />
+                      <input type="text" x-model="budgetInput" @input="parseBudget()" class="w-full border border-gray-300 rounded-md pl-7 pr-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-colors" placeholder="0.00" />
                     </div>
-                    <p class="mt-1.5 text-xs text-gray-500">Total cost limit for all work orders in this project. Individual WO limits will be compared against this total.</p>
+                    <p class="mt-1.5 text-xs text-gray-500">Total budget for all work orders in this project.</p>
                   </div>
 
                   <!-- Limit Enforcement -->
-                  <div class="mb-5">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">When WO Limits Exceed Project Limit</label>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">When WO limits exceed project budget</label>
                     <div class="space-y-2">
                       <label class="flex items-start gap-2.5 cursor-pointer">
                         <input type="radio" name="limit_enforcement" value="require_approval" checked class="mt-0.5 w-4 h-4 text-brand border-gray-300 focus:ring-brand/30" />
                         <div>
                           <div class="text-sm text-gray-900">Require approval</div>
-                          <div class="text-xs text-gray-500">Request approval before costs exceed the project limit</div>
+                          <div class="text-xs text-gray-500">Request approval before costs exceed the project budget</div>
                         </div>
                       </label>
                       <label class="flex items-start gap-2.5 cursor-pointer">
@@ -388,18 +383,163 @@
                         <input type="radio" name="limit_enforcement" value="block" class="mt-0.5 w-4 h-4 text-brand border-gray-300 focus:ring-brand/30" />
                         <div>
                           <div class="text-sm text-gray-900">Block</div>
-                          <div class="text-xs text-gray-500">Prevent adding work orders that would exceed the project limit</div>
+                          <div class="text-xs text-gray-500">Prevent adding work orders that would exceed the project budget</div>
                         </div>
                       </label>
                     </div>
                   </div>
                 </div>
 
-                <!-- SECTION DIVIDER: Owner Sharing -->
+                <!-- ═══════════════════════════════════════════════ -->
+                <!-- SECTION: Work Orders                           -->
+                <!-- ═══════════════════════════════════════════════ -->
+                <div class="border-t border-gray-200 pt-5 mt-2">
+                  <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-gray-900">Work Orders</h3>
+                    <button type="button" @click="showAddWO = !showAddWO" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                      Add Work Order
+                    </button>
+                  </div>
+
+                  <!-- Add WO Search panel -->
+                  <div x-show="showAddWO" x-collapse x-cloak class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Search for work orders to add</label>
+                    <div class="relative mb-3">
+                      <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35"></path></svg>
+                      </div>
+                      <input type="text" x-model="woSearch" class="w-full border border-gray-300 rounded-md pl-9 pr-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-colors" placeholder="Search by WO number, description, or vendor..." />
+                    </div>
+                    <!-- Available WOs -->
+                    <div class="space-y-1.5">
+                      <template x-for="wo in filteredAvailableWOs" :key="wo.id">
+                        <button type="button" @click="addWorkOrder(wo)" class="w-full text-left px-3 py-2.5 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-200 transition-colors group">
+                          <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                              <span class="text-sm font-medium text-blue-600" x-text="'#' + wo.number"></span>
+                              <span class="text-sm text-gray-600" x-text="wo.description"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                              <span class="text-xs text-gray-500" x-text="'Limit: ' + formatCurrency(wo.limit)"></span>
+                              <span class="text-xs font-medium text-brand opacity-0 group-hover:opacity-100 transition-opacity">+ Add</span>
+                            </div>
+                          </div>
+                          <div class="text-xs text-gray-500 mt-0.5" x-text="'Vendor: ' + wo.vendor"></div>
+                        </button>
+                      </template>
+                      <div x-show="filteredAvailableWOs.length === 0" class="text-center py-3 text-sm text-gray-400">
+                        No matching work orders found
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ===== Budget Summary Bar (shown when budget set and WOs added) ===== -->
+                  <div x-show="budget > 0 && workOrders.length > 0" x-cloak class="mb-4 p-4 rounded-lg border" :class="isOverBudget ? 'bg-red-50 border-red-200' : (budgetPercent >= 80 ? 'bg-amber-50 border-amber-200' : 'bg-gray-50 border-gray-200')">
+                    <!-- Summary tiles -->
+                    <div class="grid grid-cols-3 gap-3 mb-3">
+                      <div class="text-center">
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Project Budget</div>
+                        <div class="text-lg font-semibold text-gray-900" x-text="formatCurrency(budget)"></div>
+                      </div>
+                      <div class="text-center">
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">WO Limits Total</div>
+                        <div class="text-lg font-semibold" :class="isOverBudget ? 'text-red-600' : 'text-gray-900'" x-text="formatCurrency(totalWOLimits)"></div>
+                      </div>
+                      <div class="text-center">
+                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide">Remaining</div>
+                        <div class="text-lg font-semibold" :class="remaining < 0 ? 'text-red-600' : 'text-green-600'" x-text="formatCurrency(remaining)"></div>
+                      </div>
+                    </div>
+                    <!-- Progress bar -->
+                    <div class="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all duration-300" :class="isOverBudget ? 'bg-red-500' : (budgetPercent >= 80 ? 'bg-amber-500' : 'bg-brand')" :style="'width: ' + Math.min(budgetPercent, 100) + '%'"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-1.5 text-xs">
+                      <span :class="isOverBudget ? 'text-red-600 font-medium' : 'text-gray-500'" x-text="budgetPercent.toFixed(0) + '% of budget allocated'"></span>
+                      <span x-show="isOverBudget" x-cloak class="text-red-600 font-medium" x-text="formatCurrency(Math.abs(remaining)) + ' over budget'"></span>
+                    </div>
+                  </div>
+
+                  <!-- Over-budget warning -->
+                  <div x-show="isOverBudget" x-cloak class="mb-4 flex items-start gap-3 px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
+                    <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+                    <div class="flex-1">
+                      <div class="text-sm font-medium text-red-800">Work order limits exceed project budget</div>
+                      <div class="text-sm text-red-700 mt-0.5">Total WO limits (<span x-text="formatCurrency(totalWOLimits)"></span>) exceed the project budget (<span x-text="formatCurrency(budget)"></span>) by <strong x-text="formatCurrency(Math.abs(remaining))"></strong>. Adjust individual WO limits or increase the project budget.</div>
+                    </div>
+                  </div>
+
+                  <!-- Added Work Orders table -->
+                  <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <!-- Empty state -->
+                    <div x-show="workOrders.length === 0" class="text-center py-8 text-gray-400">
+                      <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                      <p class="text-sm">No work orders added yet</p>
+                      <p class="text-xs mt-1">Click "Add Work Order" to search and add work orders to this project</p>
+                    </div>
+
+                    <!-- WO table (when WOs added) -->
+                    <div x-show="workOrders.length > 0" x-cloak>
+                      <table class="w-full text-sm">
+                        <thead>
+                          <tr class="bg-gray-50 border-b border-gray-200">
+                            <th class="text-left px-4 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider w-10">#</th>
+                            <th class="text-left px-4 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">WO #</th>
+                            <th class="text-left px-4 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Description</th>
+                            <th class="text-left px-4 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Vendor</th>
+                            <th class="text-right px-4 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider">WO Limit</th>
+                            <th class="text-center px-4 py-2 text-[11px] font-semibold text-gray-500 uppercase tracking-wider" x-show="budget > 0">% of Budget</th>
+                            <th class="w-10 px-2 py-2"></th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                          <template x-for="(wo, index) in workOrders" :key="wo.id">
+                            <tr class="hover:bg-gray-50 transition-colors" :class="budget > 0 && (wo.limit / budget * 100) > 50 ? 'bg-amber-50/50' : ''">
+                              <td class="px-4 py-2.5 text-gray-400 text-xs" x-text="index + 1"></td>
+                              <td class="px-4 py-2.5">
+                                <span class="text-sm font-medium text-blue-600" x-text="wo.number"></span>
+                              </td>
+                              <td class="px-4 py-2.5 text-sm text-gray-900" x-text="wo.description"></td>
+                              <td class="px-4 py-2.5 text-sm text-gray-500" x-text="wo.vendor"></td>
+                              <td class="px-4 py-2.5 text-right">
+                                <div class="inline-flex items-center gap-1">
+                                  <span class="text-xs text-gray-400">$</span>
+                                  <input type="text" :value="wo.limit.toFixed(2)" @change="updateWOLimit(wo.id, $event.target.value)" class="w-24 border border-gray-300 rounded px-2 py-1 text-sm text-right focus:outline-none focus:ring-1 focus:ring-brand/30 focus:border-brand" />
+                                </div>
+                              </td>
+                              <td x-show="budget > 0" class="px-4 py-2.5 text-center">
+                                <span class="text-xs" :class="(wo.limit / budget * 100) > 50 ? 'font-medium text-amber-600' : 'text-gray-500'" x-text="(wo.limit / budget * 100).toFixed(0) + '%'"></span>
+                              </td>
+                              <td class="px-2 py-2.5 text-center">
+                                <button type="button" @click="removeWorkOrder(wo.id)" class="p-1 text-gray-300 hover:text-red-500 transition-colors" title="Remove">
+                                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                              </td>
+                            </tr>
+                          </template>
+                        </tbody>
+                        <tfoot x-show="workOrders.length > 1">
+                          <tr class="border-t border-gray-200 bg-gray-50">
+                            <td colspan="4" class="px-4 py-2.5 text-sm font-semibold text-gray-900">Total</td>
+                            <td class="px-4 py-2.5 text-sm font-semibold text-right" :class="isOverBudget ? 'text-red-600' : 'text-gray-900'" x-text="formatCurrency(totalWOLimits)"></td>
+                            <td x-show="budget > 0" class="px-4 py-2.5 text-center">
+                              <span class="text-xs font-semibold" :class="isOverBudget ? 'text-red-600' : (budgetPercent >= 80 ? 'text-amber-600' : 'text-gray-500')" x-text="budgetPercent.toFixed(0) + '%'"></span>
+                            </td>
+                            <td></td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════════════════════════════════════ -->
+                <!-- SECTION: Owner Visibility                      -->
+                <!-- ═══════════════════════════════════════════════ -->
                 <div class="border-t border-gray-200 pt-5 mt-2">
                   <h3 class="text-sm font-semibold text-gray-900 mb-4">Owner Visibility</h3>
 
-                  <!-- Share with Owner -->
                   <div class="mb-5">
                     <label class="flex items-center gap-2.5 cursor-pointer">
                       <input type="checkbox" class="w-4 h-4 rounded text-brand border-gray-300 focus:ring-brand/30" checked />
@@ -408,7 +548,6 @@
                     <p class="mt-1.5 text-xs text-gray-500 ml-[26px]">Owner can view project progress, status, and reports through the Owner Portal.</p>
                   </div>
 
-                  <!-- Send for Owner Approval -->
                   <div class="mb-5">
                     <label class="flex items-center gap-2.5 cursor-pointer">
                       <input type="checkbox" class="w-4 h-4 rounded text-brand border-gray-300 focus:ring-brand/30" />
@@ -417,7 +556,6 @@
                     <p class="mt-1.5 text-xs text-gray-500 ml-[26px]">An approval request will be sent to the property owner before work begins.</p>
                   </div>
 
-                  <!-- Auto-generate monthly reports -->
                   <div class="mb-5">
                     <label class="flex items-center gap-2.5 cursor-pointer">
                       <input type="checkbox" class="w-4 h-4 rounded text-brand border-gray-300 focus:ring-brand/30" />
@@ -427,75 +565,13 @@
                   </div>
                 </div>
 
-                <!-- SECTION DIVIDER: Work Orders -->
-                <div x-data="{ workOrders: [], showAddWO: false, searchQuery: '' }" class="border-t border-gray-200 pt-5 mt-2">
-                  <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-sm font-semibold text-gray-900">Work Orders</h3>
-                    <button type="button" @click="showAddWO = !showAddWO" class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium transition-colors">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                      Add Work Order
-                    </button>
-                  </div>
-
-                  <!-- Add WO Search (toggle) -->
-                  <div x-show="showAddWO" x-cloak class="mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Search for work orders to add</label>
-                    <div class="relative mb-3">
-                      <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35"></path></svg>
-                      </div>
-                      <input type="text" x-model="searchQuery" class="w-full border border-gray-300 rounded-md pl-9 pr-3 py-2.5 text-sm text-gray-900 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand transition-colors" placeholder="Search by WO number, description, or vendor..." />
-                    </div>
-                    <!-- Mock search results -->
-                    <div class="space-y-1.5">
-                      <button type="button" class="w-full text-left px-3 py-2.5 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-200 transition-colors">
-                        <div class="flex items-center justify-between">
-                          <div>
-                            <span class="text-sm font-medium text-blue-600">#100218</span>
-                            <span class="text-sm text-gray-600 ml-2">Shampoo all carpets in home</span>
-                          </div>
-                          <span class="text-xs text-gray-500">Limit: $500</span>
-                        </div>
-                        <div class="text-xs text-gray-500 mt-0.5">Vendor: Ade Mac Vendor</div>
-                      </button>
-                      <button type="button" class="w-full text-left px-3 py-2.5 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-200 transition-colors">
-                        <div class="flex items-center justify-between">
-                          <div>
-                            <span class="text-sm font-medium text-blue-600">#100219</span>
-                            <span class="text-sm text-gray-600 ml-2">Fix any holes in walls</span>
-                          </div>
-                          <span class="text-xs text-gray-500">Limit: $750</span>
-                        </div>
-                        <div class="text-xs text-gray-500 mt-0.5">Vendor: Advanced Appliance and Air</div>
-                      </button>
-                      <button type="button" class="w-full text-left px-3 py-2.5 bg-white border border-gray-200 rounded-md hover:bg-blue-50 hover:border-blue-200 transition-colors">
-                        <div class="flex items-center justify-between">
-                          <div>
-                            <span class="text-sm font-medium text-blue-600">#100260</span>
-                            <span class="text-sm text-gray-600 ml-2">Replace HVAC unit</span>
-                          </div>
-                          <span class="text-xs text-gray-500">Limit: $3,200</span>
-                        </div>
-                        <div class="text-xs text-gray-500 mt-0.5">Vendor: Ade Mac Vendor</div>
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Added WO's preview (static demo) -->
-                  <div class="border border-gray-200 rounded-lg overflow-hidden">
-                    <div class="text-center py-8 text-gray-400">
-                      <svg class="w-10 h-10 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                      <p class="text-sm">No work orders added yet</p>
-                      <p class="text-xs mt-1">Click "Add Work Order" above to search and add work orders to this project</p>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Buttons -->
+                <!-- ═══════════════════════════════════════════════ -->
+                <!-- Buttons                                        -->
+                <!-- ═══════════════════════════════════════════════ -->
                 <div class="flex items-center justify-between gap-3 pt-6 border-t border-gray-100 mt-6">
-                  <button type="button" class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors">
+                  <a href="projects-list.html" class="px-5 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors">
                     Cancel
-                  </button>
+                  </a>
                   <div class="flex items-center gap-2">
                     <button type="button" class="px-5 py-2 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-colors">
                       Save as Draft
@@ -518,6 +594,67 @@
   </div>
 </div>
 <script>
+  function projectForm() {
+    return {
+      budgetInput: '',
+      budget: 0,
+      showAddWO: false,
+      woSearch: '',
+      workOrders: [],
+      availableWOs: [
+        { id: 1, number: '100218', description: 'Shampoo all carpets in home', limit: 500, vendor: 'Ade Mac Vendor' },
+        { id: 2, number: '100219', description: 'Fix any holes in walls', limit: 750, vendor: 'Advanced Appliance and Air' },
+        { id: 3, number: '100260', description: 'Replace HVAC unit', limit: 3200, vendor: 'Ade Mac Vendor' },
+        { id: 4, number: '100275', description: 'Paint interior - 3 bedrooms', limit: 1800, vendor: 'ProPaint Services' },
+        { id: 5, number: '100282', description: 'Replace kitchen faucet', limit: 350, vendor: 'Ade Mac Vendor' },
+      ],
+      get filteredAvailableWOs() {
+        const addedIds = this.workOrders.map(w => w.id);
+        let available = this.availableWOs.filter(w => !addedIds.includes(w.id));
+        if (this.woSearch.trim()) {
+          const q = this.woSearch.toLowerCase();
+          available = available.filter(w =>
+            w.number.includes(q) || w.description.toLowerCase().includes(q) || w.vendor.toLowerCase().includes(q)
+          );
+        }
+        return available;
+      },
+      get totalWOLimits() {
+        return this.workOrders.reduce((sum, wo) => sum + wo.limit, 0);
+      },
+      get remaining() {
+        return this.budget - this.totalWOLimits;
+      },
+      get budgetPercent() {
+        if (this.budget <= 0) return 0;
+        return (this.totalWOLimits / this.budget) * 100;
+      },
+      get isOverBudget() {
+        return this.budget > 0 && this.totalWOLimits > this.budget;
+      },
+      parseBudget() {
+        const val = this.budgetInput.replace(/[^0-9.]/g, '');
+        this.budget = parseFloat(val) || 0;
+      },
+      formatCurrency(amount) {
+        return '$' + Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      },
+      addWorkOrder(wo) {
+        this.workOrders.push({ ...wo });
+        this.woSearch = '';
+      },
+      removeWorkOrder(id) {
+        this.workOrders = this.workOrders.filter(w => w.id !== id);
+      },
+      updateWOLimit(id, value) {
+        const wo = this.workOrders.find(w => w.id === id);
+        if (wo) {
+          wo.limit = parseFloat(value.replace(/[^0-9.]/g, '')) || 0;
+        }
+      },
+      init() {}
+    };
+  }
   function app() {
     return {
       sidebarOpen: true,
